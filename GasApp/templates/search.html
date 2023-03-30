@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+{% endblock %}
+<div class="search-container">
+    <form action="{% url 'GasApp:search_results' %}" method="get">
+        <input
+          type="search"
+          name="q"
+          placeholder="Search poems"
+          class="form-control"
+        />
+    </form>
+</div>
+{% block content %}
+<div class="form-card-container">
+    {% if batch_sales %}
+    {% for sale in batch_sales %}
+    <a href="{{sale.get_absolute_url}}">
+        <div class="form-card">
+            <div class="transaction-header">
+                <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M453 634V445l-79 79-43-43 152-152 152 152-43 43-79-79v189h-60ZM180 936q-24 0-42-18t-18-42V276q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm300-173q41 0 74-23.5t56-59.5h170V276H180v404h170q23 36 56 59.5t74 23.5Z"/></svg>
+                <p>Successful</p>
+            </div>
+            <div class="transaction-content">
+                <p>{{sale.kg}}kg</p>
+                <h3><span>₦</span>{{sale.price}}</h3>
+            </div>
+            <div class="transaction-date">
+                <p>{{sale.date}}</p>
+                <p> View &#8250;</p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
