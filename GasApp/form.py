@@ -1,5 +1,5 @@
 from django import forms
-from .models import Batch, Sale
+from .models import Batch, Sale, Shop
 class SaleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -25,3 +25,16 @@ class BatchForm(forms.ModelForm):
     class Meta:
         model = Batch
         fields = ('batch_name', 'date_created', 'cost', 'kg', 'price_per_kg', 'vendor_name','vendor_phone', 'close_account')
+
+class ShopForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['shop_name'].widget.attrs.update({'placeholder': 'Name of shop'})
+        self.fields['location'].widget.attrs.update({'placeholder': 'Shop location'})
+        # self.fields['date_created'].widget.attrs.update({'placeholder': 'Enter date'})
+        self.fields['shop_manager'].widget.attrs.update({'placeholder': 'Full name of shop manager'})
+        self.fields['manager_phone'].widget.attrs.update({'placeholder': 'Manager phone number'})
+    class Meta:
+        model = Shop
+        fields = ('shop_name', 'location', 'shop_manager', 'manager_phone', 'date_created')

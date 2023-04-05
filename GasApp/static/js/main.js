@@ -1,12 +1,12 @@
 
 
 let menuText = document.querySelectorAll('.batch-bar p');
+let asideContainer = document.querySelector('#aside-menu-container')
 
 function Shrink() {
     menuText.forEach(element => {
         element.classList.toggle('hide');
-        document.querySelector('.aside-menu-container').classList.toggle('aside-full-width');
-        console.log('working!!');
+        asideContainer.classList.toggle('aside-full-width');
     });
 }
 
@@ -46,4 +46,14 @@ function setDefaultDate() {
   document.getElementById("date-filter").defaultValue = `${year}-${month}-${day}`;
 }
 let currentDate = document.getElementById("date-filter").value
-console.log(currentDate);
+
+function showPassword(checkbox) {
+  let passwordInput = document.querySelectorAll("input[type='password']");
+  passwordInput.forEach((input) => {
+      if (checkbox.checked === true) {
+          input.type = "text";
+      } else {
+          input.type = "password";
+      }
+  })
+}

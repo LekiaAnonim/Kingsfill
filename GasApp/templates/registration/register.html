@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block aside %}
+{% endblock %}
+{% block content %}
+
+<div class="display-sign-container batch-container login-container" style="z-index: 1000;>
+    <div class="sign-up-container">
+        <a href="{% url 'ue_app:home' %}"><div class="cancel-sign">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </div></a>
+        <div class="sign-up-card">
+            <h1 class="center">Welcome to Miroor</h1>
+            {{register_form.errors}}
+            <form action="{% url 'ue_app:signup' %}" method="post" novalidate>
+                {% csrf_token %}
+                <div class="form-container">
+                    {% for field in register_form %}
+                    <div class="fieldWrapper">
+                        {% if field.errors %}
+                        <ul>
+                            {% for error in field.errors %}
+                            <li class="error"><strong>{{error|escape}}</strong></li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        {{field.label_tag}}
+                        <br>
+                        {{field}}
+                        {% if field.help_text %}
+                        <p class="help">{{field.help_text|safe}}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <input class="sign-up-button" type="submit" value="Submit">
+            </form>
+            <div class="showpassword-container">
+                <input type="checkbox" onclick="showPassword(this)">
+                <p class="showpassword-text">Show Password</p>
+            </div>
+            <!-- <hr /> -->
+            <div class="text-center">
+                <a class="small text-info" href="{% url 'ue_app:login' %}">Already Have an Account!</a>
+            </div>
+            <div class="text-center">
+                <a class="small text-info" href="{% url 'ue_app:home' %}">
+                    Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let password1Input = document.querySelector("input[name='password1']");
+    let password2Input = document.querySelector("input[name='password2']");
+
+    setInterval(() => {
+        if (password2Input.value == password1Input.value) {
+            password2Input.style.color = 'green';
+        } else {
+            password2Input.style.color = 'red';
+        }
+    }, 500);
+
+</script>
+
+{% endblock content %}

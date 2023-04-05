@@ -1,0 +1,170 @@
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kingfill</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,600;1,100;1,800&display=swap');
+    
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: Poppins, sans-serif;
+    }
+    
+    html{
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    body{
+        width: 100%;
+        background-color: #f1f1f1;
+        overflow-x: hidden;
+    }
+    
+    .sale-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .sale-container .receipt-logo{
+        display: flex;
+        align-items: center;
+    
+    }
+    .sale-card-receipt{
+        background-color: #fff;
+        width: fit-content;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .sale-container .receipt-logo span{
+        padding: 10px;
+        border-radius: 15px;
+        color: #fff;
+        background-color: black;
+        margin-right: 8px;
+        width: 40px;
+        height: 40px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .sale-container td{
+        min-width: 100px;
+        height: 30px;
+        padding: 10px 20px 10px 0;
+        border: #009bd6 solid;
+    }
+    .sale-container .receipt-logo p{
+        font-weight: 900;
+        font-size: 25px;
+    }
+    .sale-container .bold{
+        font-weight: 900;
+    }
+    @media (max-width:750px) {
+        .form-card-container{
+            flex-wrap: wrap;
+        }
+        .entry-menu-container .new-entry svg{
+            width: 40px;
+            height: 40px;
+        }
+        .batch-bar{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column-reverse;
+        }
+        .batch-bar p{
+            font-size: 11px;
+        }
+        .aside-full-width{
+            width: 100vw;
+            height: 50px;
+            max-width: 100vw;
+            min-width: 100vw;
+            position: fixed;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #aside-menu-container{
+            height: 50px;
+            top: auto;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        #aside-menu-container *{
+            margin: 0;
+            padding: 0;
+        }
+        .menu{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-icon{
+            display: none;
+        }
+    }
+    </style>
+   
+</head>
+
+
+
+
+    <div class="sale-container">
+        <div class="sale-card-receipt">
+            <p>**** CUSTOMER'S COPY ****</p>
+            <div class="receipt-logo">
+                <span>K</span><p>Kingsfill</p>
+            </div>
+            <p></p>
+            <h1>SALE RECEIPT</h1>
+
+            <tr>
+                <td>RECEIPT ID: </td>
+                <td> </td>
+            </tr> <br>
+            <tr>
+                <td>PHONE: </td>
+                <td> </td>
+            </tr><br>
+            <p>* * * * * * * * * * * * * * * * * * * * * * *</p>
+            <tr>
+                <td>DATE: </td>
+                <td class="bold"> </td>
+            </tr>
+            <p>_________________________</p>
+            <tr>
+                <td>KG: </td>
+                <td class="bold">kg </td>
+            </tr><br>
+            <tr>
+                <td>PICE: </td>
+                <td class="bold">NGN </td>
+            </tr>
+            <p class="bold">***********************</p>
+            <h2>APPROVED</h2>
+            <p>* * * * * * * * * * * * * * * * * * * * * * *</p>
+            <p>Thanks, for choosing Kingsfill</p>
+            <p>* * * * * * * * * * * * * * * * * * * * * * *</p>
+        </div>
+        <a href="/print"><button class="submit-btn">Print</button></a>
+    </div>

@@ -1,6 +1,30 @@
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import (PasswordResetDoneView, PasswordResetConfirmView,
+                                        PasswordResetCompleteView, PasswordChangeView,
+                                       PasswordChangeDoneView, PasswordResetView)
+from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.contrib import messages
+from django.views.generic import View
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    PasswordChangeForm,
+    PasswordResetForm,
+    SetPasswordForm,
+)
+from django.urls import reverse_lazy
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView
-from .models import Batch, Sale
+from .models import Batch, Sale, Shop
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, BaseCreateView
@@ -9,10 +33,25 @@ from django.http import JsonResponse
 from datetime import date, datetime
 from django.views.generic import FormView
 from django.views.generic.list import MultipleObjectMixin
-from .form import SaleForm, BatchForm
+from .form import SaleForm, BatchForm, ShopForm
 from django.db.models import Sum, Count
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth import get_user_model
+from io import BytesIO
+UserModel = get_user_model()
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
 
 # Create your views here.
+
+class IndexView(TemplateView):
+    template_name = 'index.html'
+
 class BatchView(ListView):
     model = Batch
     template_name = 'batch.html'
@@ -25,30 +64,83 @@ class BatchView(ListView):
         context = super(BatchView, self).get_context_data(**kwargs)
 
         return context
+class ShopView(ListView):
+    model = Shop
+    template_name = 'shop.html'
+    context_object_name = 'shops'
+    paginate_by = 12
 
+    def get_context_data(self, *args, **kwargs):
+
+        # Call the base implementation first to get the context
+        context = super(ShopView, self).get_context_data(**kwargs)
+
+        return context
+class CustomersView(ListView):
+    model = Sale
+    template_name = 'customers_list.html'
+    context_object_name = 'customers'
+    paginate_by = 12
+
+    def get_queryset(self):
+        customers_group = Sale.objects.values('customer_phone').annotate(Sum('kg'), Sum('price'))
+        # print(customers_group)
+        return customers_group
+
+    def get_context_data(self, *args, **kwargs):
+
+        # Call the base implementation first to get the context
+        context = super(CustomersView, self).get_context_data(**kwargs)
+
+        return context
 class SaleDetail(DetailView):
     model = Sale
     template_name = 'sale_detail.html'
 
+class ShopDetail(DetailView):
+    model = Shop
+    template_name = 'shop_detail.html'
+
 class BatchCreateView(CreateView):
     model = Batch
-    # fields = ['batch_name', 'date_created', 'cost', 'kg', 'price_per_kg', 'vendor_name','vendor_phone', 'close_account']
     template_name = 'batch_form.html'
     form_class = BatchForm
 
 
 class BatchUpdateView(UpdateView):
     model = Batch
-    # fields = ['batch_name', 'date_created', 'cost', 'kg', 'price_per_kg', 'vendor_name', 'close_account']
     template_name = 'batch_form.html'
     form_class = BatchForm
 
+class ShopCreateView(CreateView):
+    model = Shop
+    template_name = 'shop_form.html'
+    form_class = ShopForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class ShopUpdateView(UpdateView):
+    model = Shop
+    template_name = 'shop_form.html'
+    form_class = ShopForm
+
 class BatchDeleteView(DeleteView):
     model = Batch
-    success_url = reverse_lazy('ue_app:channel_detail')
+    success_url = reverse_lazy('GasApp:batches')
 
 
-
+class ShopBatchView(ListView):
+    model = Batch
+    template_name = "shop_batch.html"
+    paginate_by = 12
+    context_object_name = 'batches'
+    def get_queryset(self):
+        shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+        print(shop.user)
+        return Batch.objects.filter(shop=shop).order_by('date_created')
 class BatchSaleView(ListView, FormView):
     model = Sale
     template_name = "batch_sale.html"
@@ -59,7 +151,7 @@ class BatchSaleView(ListView, FormView):
 
     def get_queryset(self):
         batch = get_object_or_404(Batch, id=self.kwargs.get('id'))
-        return Sale.objects.filter(batch=batch).order_by('-date')
+        return Sale.objects.filter(batch=batch).order_by('date')
 
     def get_context_data(self, *args, **kwargs):
         context = super(BatchSaleView,
@@ -94,10 +186,15 @@ class BatchSaleView(ListView, FormView):
         context = super().get_context_data(**kwargs)
         
         batch = get_object_or_404(Batch, id=self.kwargs.get('id'))
-        batch_sales = Sale.objects.filter(batch=batch).order_by('-date')
+        batch_sales = Sale.objects.filter(batch=batch).order_by('date')
 
         # Date Display in Stats Tab
-        latest_date = batch_sales.last().date
+        if batch_sales.last() == None:
+            latest_date = date.today()
+            
+        else:
+            latest_date = batch_sales.last().date
+
         latest_month = latest_date.strftime('%m')
         latest_day = latest_date.strftime('%d')
         
@@ -122,7 +219,6 @@ class BatchSaleView(ListView, FormView):
             batch_data_month = Sale.objects.filter(batch=batch, date__month = month_, date__year = year_).values()
         else:
             month_request_ = datetime.strptime(month_request, '%Y-%m')
-            print(month_request_)
             month_ = month_request_.month
             year_ = month_request_.year
             batch_data_month = Sale.objects.filter(batch=batch, date__month = month_, date__year = year_).values()
@@ -213,3 +309,169 @@ class SearchResultsList(ListView):
         batch = get_object_or_404(Batch, id=self.kwargs.get('id'))
         return Sale.objects.filter(batch=batch).order_by('-date')
         
+
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.views.generic import View
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+
+class UserLoginView(View):
+    """
+     Logs author into dashboard.
+    """
+    template_name = 'login.html'
+    context_object = {"login_form": AuthenticationForm}
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context_object)
+
+    def post(self, request, *args, **kwargs):
+
+        login_form = AuthenticationForm(data=request.POST)
+
+        if login_form.is_valid():
+            username = login_form.cleaned_data['username']
+            password = login_form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+
+            
+            login(request, user)
+            messages.success(request, f"Login Successful ! "
+                                f"Welcome {user.username}. Update your User profile if you have not done so. Ignore this message if your User profile is upto date.")
+            return redirect('GasApp:shops')
+
+        else:
+            messages.error(request,
+                           f"Please enter a correct username and password. Note that both fields may be case-sensitive."
+                           )
+            return render(request, self.template_name, self.context_object)
+
+
+
+
+class PasswordResetView(PasswordResetView):
+    template_name = 'registration/pwd_reset_form.html'
+    email_template_name = "registration/email_text/password_reset_email.html"
+    from_email = ''
+    subject_template_name = "registration/email_text/password_reset_subject.txt"
+    success_url = reverse_lazy("GasApp:password_reset_done")
+
+class PasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'registration/email_text/password_reset_done.html' 
+
+class PasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/email_text/password_reset_confirm.html'
+    success_url = reverse_lazy("GasApp:password_reset_complete")
+
+class PasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'registration/email_text/password_reset_complete.html'
+
+class PasswordChangeView(PasswordChangeView):
+    template_name = 'registration/email_text/password_change_form.html'
+    success_url = reverse_lazy("GasApp:password_change_done")
+
+class PasswordChangeDoneView(PasswordChangeDoneView):
+    template_name = 'registration/email_text/password_change_done.html'
+
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = UserModel._default_manager.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        messages.success(
+            request, f'Hi {user.username}, your registration was successful!! .')
+        return reverse('GasApp:shops')
+    else:
+        return reverse_lazy('GasApp:email_verification_invalid')
+
+
+class EmailVerificationConfirm(TemplateView):
+    template_name = 'registration/email_verification_confirm.html'
+
+
+class EmailVerificationInvalid(TemplateView):
+    template_name = 'registration/email_verification_invalid.html'
+
+
+
+
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    result = finders.find(uri)
+    if result:
+        if not isinstance(result, (list, tuple)):
+                result = [result]
+        result = list(os.path.realpath(path) for path in result)
+        path=result[0]
+    else:
+        sUrl = settings.STATIC_URL        # Typically /static/
+        sRoot = settings.STATIC_ROOT      # Typically /home/userX/project_static/
+        mUrl = settings.MEDIA_URL         # Typically /media/
+        mRoot = settings.MEDIA_ROOT       # Typically /home/userX/project_static/media/
+
+        if uri.startswith(mUrl):
+                path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+                path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+                'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
+
+def render_pdf_view(request):
+    template_path = 'sale_detail.html'
+    context = {}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="receipt.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response, link_callback=link_callback)
+    # if error then show some funny view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+# defining the function to convert an HTML file to a PDF file
+def html_to_pdf(template_src, context_dict={}):
+     template = get_template(template_src)
+     html  = template.render(context_dict)
+     result = BytesIO()
+     pdf = pisa.pisaDocument(BytesIO(html.encode("utf8")), result)
+     if not pdf.err:
+         return HttpResponse(result.getvalue(), content_type='application/pdf')
+     return None
+
+#Creating a class based view
+class GeneratePdf(DetailView):
+    model=Sale
+    template_path = 'sale_detail.html'
+    def get(self, request, *args, **kwargs):
+        data = Sale.objects.filter(id=self.kwargs.get('id'))
+        open('result.html', "w").write(render_to_string('sale_detail.html', {'data': data}))
+
+        # Converting the HTML template into a PDF file
+        pdf = html_to_pdf('result.html')
+            
+            # rendering the template
+        return HttpResponse(pdf, content_type='application/pdf')

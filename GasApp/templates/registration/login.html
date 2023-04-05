@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block aside %}
+{% endblock %}
+{% block content %}
+
+<div class="display-sign-container" style="z-index: 1000;">
+    <div class="sign-up-container">
+        <div class="sign-up-card">
+            {% if login_form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+            {% endif %}
+    
+            {% if next %}
+            {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.</p>
+            {% else %}
+            <p>Please login to see this page.</p>
+            {% endif %}
+            {% endif %}
+            <form method="post" action="{% url 'GasApp:login' %}">
+                {% csrf_token %}
+                <div class="form-container">
+                    {{ login_form }}
+                </div>
+    
+                <!-- <div class="g-recaptcha" data-sitekey="your_site_key"></div>
+                <br /> -->
+                <input class="sign-up-button" type="submit" value="Login" />
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+            <div class="showpassword-container">
+                <input type="checkbox" onclick="showPassword(this)">
+                <p class="showpassword-text">Show Password</p>
+            </div>
+            {# Assumes you setup the password_reset view in your URLconf #}
+            <p><a href="{% url 'GasApp:password_reset' %}" class="text-info">Lost password?</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
