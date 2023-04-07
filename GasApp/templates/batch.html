@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+<div class="content-container">
 {% block content %}
 {% if batches %}
 <div class="batch-container">
@@ -331,3 +332,4 @@
     <a href="{% url 'GasApp:batch-create' %}">Create a batch</a>
 {% endif %}
 {% endblock %}
+</div>

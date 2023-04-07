@@ -19,6 +19,8 @@ body{
     width: 100%;
     background-color: #f1f1f1;
     overflow-x: hidden;
+}
+.content-container{
     padding: 0 5px;
 }
 #aside-menu-container{
