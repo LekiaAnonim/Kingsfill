@@ -24,7 +24,7 @@ class BatchForm(forms.ModelForm):
         self.fields['vendor_phone'].widget.attrs.update({'placeholder': 'Enter vendor phone number'})
     class Meta:
         model = Batch
-        fields = ('batch_name', 'date_created', 'cost', 'kg', 'price_per_kg', 'vendor_name','vendor_phone', 'close_account')
+        fields = ('shop', 'batch_name', 'date_created', 'cost', 'kg', 'price_per_kg', 'vendor_name','vendor_phone', 'close_account')
 
 class ShopForm(forms.ModelForm):
     
