@@ -222,6 +222,20 @@ section{
     border: none;
     border-bottom: thin#009bd6 solid;
 }
+.form-card select{
+    width: 100%;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: thin #f1f1f1 solid;
+}
+.form-card select:focus{
+    outline: none;
+    border: none;
+    border-bottom: thin#009bd6 solid;
+}
 .form-header{
     display: flex;
     align-items: center;
