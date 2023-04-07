@@ -9,13 +9,20 @@
     <title>Kingfill</title>
     {% endblock %}
     {% block styles %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-element-bundle.min.js"></script>
+    
     {% endblock %}
 </head>
-<body style="background-image: url('{% static '6113957.jpg' %}'); background-size: cover;" class="landing-page-container">
-    <div class="landing-page">
+<body>
+    {% block nav %}
+    <div class="navigation-bar">
         <div class="logo">
-            <p>Kingfill</p>
+            <a href="{% url 'GasApp:index' %}">
+                <img src="{% static 'kingfill logo black.png' %}" alt="">
+            </a>
         </div>
         <div class="login">
             <?xml version="1.0" encoding="UTF-8"?>
@@ -74,9 +81,126 @@
             <a href="{% url 'GasApp:login' %}">Login</a>
         </div>
     </div>
-    <div class="incognito-form">
-        <iframe src="https://www.cognitoforms.com/f/tMasbWE_NUyFdxsra-dyGw/2" style="border:0;width:100%; padding: 20px;" height="549"></iframe>
+    {% endblock %}
+    {% block content %}
+    <div class="landing-page-container">
+        <div class="landing-page">
+            <main>
+                <div>
+                <span>gas refill, cylinder sale, gas installation and maintainance</span>
+                <h1>Order Your Gas Now</h1>
+                <hr>
+                <p>Fill the form below to place an order, or use the live chat to contact our sales representative or visit us at our gas plant.</p>
+                <a href="#map">Find us on map</a>
+                </div>
+                <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide swiper-slide--one" style="background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url('{% static 'Kingfill Cooking Gas 1.jpg' %}'); background-repeat: no-repeat; background-position: 50% 50%; background-size: cover;">
+                    </div>
+                    <div class="swiper-slide swiper-slide--two" style="background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url('{% static 'Kingfill Cooking Gas fly.jpg' %}'); background-repeat: no-repeat; background-position: 50% 50%; background-size: cover;">
+                    
+                    </div>
+            
+                    <div class="swiper-slide swiper-slide--three" style="background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url('{% static 'Kingfill Cooking Gas flyer.jpg' %}'); background-repeat: no-repeat; background-position: 50% 50%; background-size: cover;">
+                    </div>
+            
+                    <div class="swiper-slide swiper-slide--four" style="background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url('{% static 'Kingfill Cooking Gas...jpg' %}'); background-repeat: no-repeat; background-position: 50% 50%; background-size: cover;">
+                    <div>
+                        <h2>What are you waiting for?</h2>
+                        <a href="https://en.wikipedia.org/wiki/Shark" target="_blank">explore</a>
+                    </div>
+                    </div>
+            
+                    <!-- <div class="swiper-slide swiper-slide--five">
+            
+                    <div>
+                        <h2>Dolphin</h2>
+                        <p>
+                        Dolphins are widespread. Most species prefer the warm waters of the tropic zones, but some, such as the right whale dolphin, prefer colder climates. Dolphins feed largely on fish and squid, but a few, such as the orca, feed on large mammals such as seals.
+                        </p>
+                        <a href="https://en.wikipedia.org/wiki/Dolphin" target="_blank">explore</a>
+                    </div>
+                    </div> -->
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                </div>
+                <img src="https://cdn.pixabay.com/photo/2021/11/04/19/39/jellyfish-6769173_960_720.png" alt="" class="bg">
+                <img src="https://cdn.pixabay.com/photo/2012/04/13/13/57/scallop-32506_960_720.png" alt="" class="bg2">
+            </main>
+        </div>
+        <div class="incognito-form">
+            <iframe src="https://www.cognitoforms.com/f/tMasbWE_NUyFdxsra-dyGw/2" style="border:0;width:100%; padding: 20px;" height="549"></iframe>
+        </div>
+        <div class="google-map" id="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3966.520326045045!2d7.054322013963083!3d6.194865728617039!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sTonimas%20junction%2C%20167%20Ifite%2C%20Awka%2C%20Anambra%20State!5e0!3m2!1sen!2sng!4v1680868609486!5m2!1sen!2sng" style="border:0;" allowfullscreen="yes" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <script src="https://www.cognitoforms.com/f/iframe.js"></script>
+        
+        <script type="module">
+            import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.esm.browser.min.js'
+
+            var swiper = new Swiper(".swiper", {
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 3,
+                slideShadows: true
+            },
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true
+            },
+            breakpoints: {
+                640: {
+                slidesPerView: 2
+                },
+                768: {
+                slidesPerView: 1
+                },
+                1024: {
+                slidesPerView: 2
+                },
+                1560: {
+                slidesPerView: 3
+                }
+            }
+            });
+        </script>
     </div>
-    
-    <script src="https://www.cognitoforms.com/f/iframe.js"></script>
+    {% endblock %}
+    {% block footer %}
+    <div class="footer-container">
+        <div class="logo">
+            <a href="{% url 'GasApp:index' %}">
+                <img src="{% static 'kingfill logo.png' %}" alt="">
+            </a>
+        </div>
+        <div class="copyright">
+            <p>Made with <span class="made-with-love-heart">&hearts;</span> by Pilot X Lab &copy;<span class="copyright-year"></span> </p>
+        </div>
+    </div>
+    {% endblock %}
+    {% block script %}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% endblock %}
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/6430173931ebfa0fe7f709e3/1gtdtlfb8';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
 </body>
+</html>

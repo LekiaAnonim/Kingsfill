@@ -42,6 +42,8 @@ let day = date.getDate();
 let month = date.getMonth() + 1;
 let year = date.getFullYear();
 
+document.querySelector('.copyright-year').innerText = year
+
 function setDefaultDate() {
   document.getElementById("date-filter").defaultValue = `${year}-${month}-${day}`;
 }

@@ -597,6 +597,11 @@ tbody td{
 .sale-container .bold{
     font-weight: 900;
 }
+.create-a-shop svg{
+    width: 100px;
+    height: 100px;
+    fill: #009bd6;
+}
 @media (max-width:750px) {
     .form-card-container{
         flex-wrap: wrap;
