@@ -619,6 +619,43 @@ tbody td{
     height: 100px;
     fill: #009bd6;
 }
+.logo img{
+    width: 80px;
+    height: 30px;
+}
+.shop-heading-container{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.customers-bar{
+    background-color: #009bd6;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    margin-right: 10px;
+    width: fit-content;
+    border-radius: 6px;
+}
+.customers-bar p{
+    color: #fff;
+    font-weight: 400;
+    font-size: 12px;
+}
+.customers-bar:hover{
+    background-color: #00719c;
+}
+.customers-bar svg{
+    width: 15px;
+    height: 15px;
+    fill: #fff;
+    margin-left: 5px;
+}
 @media (max-width:750px) {
     .form-card-container{
         flex-wrap: wrap;

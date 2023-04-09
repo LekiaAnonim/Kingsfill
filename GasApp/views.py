@@ -46,106 +46,204 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-class BatchView(ListView):
+# class BaseView(TemplateView):
+#     template_name = 'base.html'
+
+#     def get_context_data(self, *args, **kwargs):
+    
+#         # Call the base implementation first to get the context
+        
+#         context = super(BatchView, self).get_context_data(**kwargs)
+#         shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+#         context['shop'] = shop
+#         return context
+
+
+
+class BatchView(LoginRequiredMixin, ListView):
     model = Batch
     template_name = 'batch.html'
     context_object_name = 'batches'
     paginate_by = 12
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
 
     def get_context_data(self, *args, **kwargs):
 
         # Call the base implementation first to get the context
         context = super(BatchView, self).get_context_data(**kwargs)
-
+        
         return context
-class ShopView(ListView):
+class ShopView(LoginRequiredMixin, ListView):
     model = Shop
     template_name = 'shop.html'
     context_object_name = 'shops'
     paginate_by = 12
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
 
-    def get_context_data(self, *args, **kwargs):
-
-        # Call the base implementation first to get the context
-        context = super(ShopView, self).get_context_data(**kwargs)
-
-        return context
-class CustomersView(ListView):
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(ShopView, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
+class CustomersView(LoginRequiredMixin, ListView):
     model = Sale
     template_name = 'customers_list.html'
     context_object_name = 'customers'
     paginate_by = 12
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
 
     def get_queryset(self):
-        customers_group = Sale.objects.values('customer_phone').annotate(Sum('kg'), Sum('price'))
+
+        shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+        customers_group = Sale.objects.filter(batch__shop = shop).values('customer_phone').annotate(Sum('kg'), Sum('price'))
         # print(customers_group)
         return customers_group
 
-    def get_context_data(self, *args, **kwargs):
+    # def get_context_data(self, *args, **kwargs):
 
-        # Call the base implementation first to get the context
-        context = super(CustomersView, self).get_context_data(**kwargs)
-
-        return context
-class SaleDetail(DetailView):
+    #     # Call the base implementation first to get the context
+    #     context = super(CustomersView, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
+class SaleDetail(LoginRequiredMixin, DetailView):
     model = Sale
     template_name = 'sale_detail.html'
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(ShopDetail, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
 
-class ShopDetail(DetailView):
+class ShopDetail(LoginRequiredMixin, DetailView):
     model = Shop
     template_name = 'shop_detail.html'
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(ShopDetail, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
 
-class BatchCreateView(CreateView):
+class BatchCreateView(LoginRequiredMixin, CreateView):
     model = Batch
     template_name = 'batch_form.html'
     form_class = BatchForm
-
-
-class BatchUpdateView(UpdateView):
-    model = Batch
-    template_name = 'batch_form.html'
-    form_class = BatchForm
-
-class ShopCreateView(CreateView):
-    model = Shop
-    template_name = 'shop_form.html'
-    form_class = ShopForm
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(BatchCreateView, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+        form.instance.shop = shop
         return super().form_valid(form)
 
 
-class ShopUpdateView(UpdateView):
+class BatchUpdateView(LoginRequiredMixin, UpdateView):
+    model = Batch
+    template_name = 'batch_form.html'
+    form_class = BatchForm
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
+
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(BatchUpdateView, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
+    
+
+class ShopCreateView(LoginRequiredMixin, CreateView):
     model = Shop
     template_name = 'shop_form.html'
     form_class = ShopForm
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
 
-class BatchDeleteView(DeleteView):
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(BatchUpdateView, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
+
+
+class ShopUpdateView(LoginRequiredMixin, UpdateView):
+    model = Shop
+    template_name = 'shop_form.html'
+    form_class = ShopForm
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
+
+    # def get_context_data(self, *args, **kwargs):
+        
+    #     # Call the base implementation first to get the context
+    #     context = super(ShopUpdateView, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
+
+class BatchDeleteView(LoginRequiredMixin, DeleteView):
     model = Batch
     success_url = reverse_lazy('GasApp:batches')
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
 
 
-class ShopBatchView(ListView):
+class ShopBatchView(LoginRequiredMixin, ListView):
     model = Batch
     template_name = "shop_batch.html"
     paginate_by = 12
     context_object_name = 'batches'
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
+    
     def get_queryset(self):
         shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
-        print(shop.user)
         return Batch.objects.filter(shop=shop).order_by('date_created')
-class BatchSaleView(ListView, FormView):
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShopBatchView,
+                        self).get_context_data(**kwargs)
+        shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+        context['shop'] = shop
+        return context
+
+class BatchSaleView(LoginRequiredMixin, ListView, FormView):
     model = Sale
     template_name = "batch_sale.html"
     paginate_by = 12
     form_class = SaleForm
+    login_url = "GasApp:login"
+    redirect_field_name = "redirect_to"
     # success_url = reverse_lazy('GasApp:sale-receipt')
     # fields = ['kg', 'price', 'date', 'customer_name', 'customer_phone']
 
@@ -173,6 +271,9 @@ class BatchSaleView(ListView, FormView):
             total_sales_kg = batch_sales.aggregate(Sum('kg'))['kg__sum']
 
         sales_count = batch_sales.count()
+
+        shop = get_object_or_404(Shop, id=self.kwargs.get('shop_id'))
+        context['shop'] = shop
 
         context['batch_sales'] = batch_sales
         context['batch'] = batch
@@ -308,6 +409,14 @@ class SearchResultsList(ListView):
     def get_queryset(self):
         batch = get_object_or_404(Batch, id=self.kwargs.get('id'))
         return Sale.objects.filter(batch=batch).order_by('-date')
+    
+    # def get_context_data(self, *args, **kwargs):
+            
+    #     # Call the base implementation first to get the context
+    #     context = super(SearchResultsList, self).get_context_data(**kwargs)
+    #     shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
+    #     context['shop'] = shop
+    #     return context
         
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -335,11 +444,15 @@ class UserLoginView(View):
             password = login_form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
 
-            
+            shop = get_object_or_404(Shop, user=user)
             login(request, user)
             messages.success(request, f"Login Successful ! "
-                                f"Welcome {user.username}. Update your User profile if you have not done so. Ignore this message if your User profile is upto date.")
-            return redirect('GasApp:shops')
+                                f"Welcome {user.username}.")
+            if user.is_superuser == True:
+                return redirect('GasApp:shops')
+            
+            else:
+                return redirect('GasApp:shop-batches', shop.id)
 
         else:
             messages.error(request,

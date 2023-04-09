@@ -82,6 +82,27 @@
         </div>
     </div>
     {% endblock %}
+    {% block messages %} 
+            {% if messages %} 
+            {% for message in messages %}
+            <div class="message-alert">
+                {% comment %} <div class="cancel-banner" onclick="cancelMessage()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                        class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                {% if message.level_tag == 'error' %}
+                <img src="{% static 'images/image/icons8-box-important.gif' %}" alt="">
+                {% else %}
+                <img src="{% static 'images/image/taxi-handshake.gif' %}" alt="">
+                {% endif %} {% endcomment %}
+                <p>{{ message }}</p>
+                
+            </div>
+            {% endfor %} 
+            {% endif %} 
+            {% endblock messages %}
     {% block content %}
     <div class="landing-page-container">
         <div class="landing-page">
@@ -107,7 +128,6 @@
                     <div class="swiper-slide swiper-slide--four" style="background: url('{% static 'Kingfill Cooking Gas...jpg' %}'); background-repeat: no-repeat; background-position: 50% 50%; background-size: cover;">
                     <div>
                         <h2>What are you waiting for?</h2>
-                        <a href="https://en.wikipedia.org/wiki/Shark" target="_blank">explore</a>
                     </div>
                     </div>
             

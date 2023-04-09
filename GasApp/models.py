@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Shop(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+    user = models.OneToOneField(User, null=True, related_name = 'user', on_delete=models.SET_NULL)
     shop_name = models.CharField(max_length=500, null=True, blank=True, default="Shop 1", unique=True)
     date_created = models.DateField(null=True, default=date.today)
     location = models.CharField(max_length=500, null=True, blank=True)
@@ -20,14 +20,15 @@ class Shop(models.Model):
         ordering =['shop_name','-date_created',]
 
     def get_absolute_url(self):
-        return reverse('GasApp:shop_detail', kwargs={'pk': self.id})
+        return reverse('GasApp:shop-batches', kwargs={'id': self.id})
+    
 class Batch(models.Model):
     shop = models.ForeignKey(Shop, related_name='shop', on_delete=models.SET_NULL, null=True)
     batch_name = models.CharField(max_length=500, null=True, blank=True, default="Batch", unique=True)
     date_created = models.DateField(null=True, default=date.today)
-    cost = models.DecimalField(null=True,max_digits=20, decimal_places=2)
-    kg = models.DecimalField(null=True,max_digits=20, decimal_places=2)
-    price_per_kg = models.DecimalField(null=True,max_digits=20, decimal_places=2)
+    cost = models.DecimalField(null=True, max_digits=20, decimal_places=2)
+    kg = models.DecimalField(null=True, max_digits=20, decimal_places=2)
+    price_per_kg = models.DecimalField(null=True, blank=True, max_digits=20, decimal_places=2)
     vendor_name = models.CharField(max_length=500, null=True, blank=True)
     vendor_phone = models.CharField(max_length=500, null=True, blank=True)
     close_account = models.BooleanField(default=False)
@@ -44,7 +45,7 @@ class Batch(models.Model):
         verbose_name_plural = "Batches"
 
     def get_absolute_url(self):
-        return reverse('GasApp:batch-sales', kwargs={'pk': self.id})
+        return reverse('GasApp:batch-sales', kwargs={'shop_id': self.shop.id, 'id': self.id})
 
 
 class Sale(models.Model):
