@@ -4,23 +4,27 @@ from . import views
 app_name = 'GasApp'
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
+     path('', views.IndexView.as_view(), name='index'),
 #     path('base', views.BaseView.as_view(), name='base'),
-    path('batches', views.BatchView.as_view(), name='batches'),
-     path('shops', views.ShopView.as_view(), name='shops'),
-    path('shop/<int:id>/customers', views.CustomersView.as_view(), name='customers'),
-    path('shop/<int:shop_id>/batch/<int:id>/sales', views.BatchSaleView.as_view(), name='batch-sales'),
-    path('shop/<int:id>/batches', views.ShopBatchView.as_view(), name='shop-batches'),
-    path('shop/<int:id>/batch/create', views.BatchCreateView.as_view(), name='batch-create'),
-    path('shop/<int:id>/batch/<int:pk>/update', views.BatchUpdateView.as_view(), name='batch-update'),
      path('shop/create', views.ShopCreateView.as_view(), name='shop-create'),
-    path('shop/<int:pk>/update', views.ShopUpdateView.as_view(), name='shop-update'),
-    path('sale/<int:pk>/receipt', views.SaleDetail.as_view(), name='sale-receipt'),
-    path(
-        route='search_results',
-        view=views.SearchResultsList.as_view(),
-        name='search_results'
-    ),
+     path('shop/<int:pk>/batches', views.ShopDetailView.as_view(), name='shop-batches'),
+     path('shop/<int:pk>/update', views.ShopUpdateView.as_view(), name='shop-update'),
+     # path('shop/<int:pk>/batches', views.ShopBatchView.as_view(), name='shop-batches'),
+     path('shop/<int:id>/customers', views.CustomersView.as_view(), name='customers'),
+     path('shop/batch/create', views.BatchCreateView.as_view(), name='batch-create'),
+     path('shop/<int:shop_id>/batch/<int:id>/sales', views.BatchSaleView.as_view(), name='batch-sales'),
+     path('shop/<int:id>/batch/<int:pk>/update', views.BatchUpdateView.as_view(), name='batch-update'),
+     # path('batches', views.BatchView.as_view(), name='batches'),
+     path('shops', views.ShopView.as_view(), name='shops'),
+
+     
+     
+     path('sale/<int:pk>/receipt', views.SaleDetail.as_view(), name='sale-receipt'),
+     path(
+          route='search_results',
+          view=views.SearchResultsList.as_view(),
+          name='search_results'
+     ),
     # Login and Password reset
     path(
         route='login',

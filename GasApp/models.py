@@ -17,10 +17,10 @@ class Shop(models.Model):
     
     class Meta:
 
-        ordering =['shop_name','-date_created',]
+        ordering =['shop_name','date_created', 'id']
 
     def get_absolute_url(self):
-        return reverse('GasApp:shop-batches', kwargs={'id': self.id})
+        return reverse('GasApp:shop-batches', kwargs={'pk': self.id})
     
 class Batch(models.Model):
     shop = models.ForeignKey(Shop, related_name='shop', on_delete=models.SET_NULL, null=True)
