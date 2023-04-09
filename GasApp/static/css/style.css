@@ -262,6 +262,7 @@ section{
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
 }
 .batch-card{
     width: fit-content;
@@ -705,5 +706,15 @@ tbody td{
     }
     .menu-icon{
         display: none;
+    }
+    .content-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        
+    }
+    .batch-container{
+        padding-left: 20px;
     }
 }
