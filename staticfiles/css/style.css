@@ -262,7 +262,6 @@ section{
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    justify-content: center;
 }
 .batch-card{
     width: fit-content;
@@ -429,6 +428,7 @@ a{
 .stats-result-contain{
     display: flex;
     align-items: center;
+
 }
 .stats-submit-button:hover{
     background-color: #009bd6;
@@ -716,5 +716,8 @@ tbody td{
     }
     .batch-container{
         padding-left: 20px;
+    }
+    .stats-result-contain{
+        flex-wrap: wrap;
     }
 }
