@@ -720,4 +720,37 @@ tbody td{
     .stats-result-contain{
         flex-wrap: wrap;
     }
+    .transaction-table th, td{
+        font-size: 11px;
+    }
+}
+
+.transaction-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.transaction-table thead{
+    position: static;
+    top: 0;
+}
+.transaction-table th, td{
+    border-bottom: thin solid #ddd;
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+}
+.transaction-table tr{
+    cursor: pointer;
+}
+.transaction-table tr:hover{
+    background-color: #e7e7e7;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+.transaction-table svg{
+    fill: #07d600;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
 }

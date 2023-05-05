@@ -20,7 +20,7 @@ class BatchAdmin(admin.ModelAdmin):
 
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
-    fields = ('batch','kg', 'price', 'date', 'customer_name', 'customer_phone')
+    fields = ('batch','kg', 'price', 'payment_type', 'date', 'customer_name', 'customer_phone')
     list_display = ('batch', 'kg', 'price', 'date', 'customer_name', 'customer_phone')
     list_filter = ('kg', 'price', 'date', 'customer_name', 'customer_phone')
     search_fields = ('kg', 'price', 'date', 'customer_name', 'customer_phone')

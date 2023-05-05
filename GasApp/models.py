@@ -55,6 +55,12 @@ class Sale(models.Model):
     date = models.DateField(null=True, default=date.today)
     customer_name = models.CharField(max_length=500, null=True, blank=True)
     customer_phone = models.CharField(max_length=500, null=True, blank=True)
+    PAYMENT_TYPE = (
+        ("POS", "POS"),
+        ("Cash", "Cash"),
+        ("Bank Transfer", "Bank Transfer"),
+    )
+    payment_type = models.CharField(max_length=100, choices=PAYMENT_TYPE, default="Cash")
 
     def __str__(self):
         return f"{self.id}-{self.customer_name}-{self.date}-{self.kg}"

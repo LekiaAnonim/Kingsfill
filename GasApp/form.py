@@ -11,7 +11,7 @@ class SaleForm(forms.ModelForm):
         self.fields['customer_phone'].widget.attrs.update({'placeholder': 'Customer phone number'})
     class Meta:
         model = Sale
-        fields = ('kg', 'price', 'date', 'customer_name', 'customer_phone')
+        fields = ('kg', 'price', 'payment_type', 'date', 'customer_name', 'customer_phone')
 
 class BatchForm(forms.ModelForm):
     
