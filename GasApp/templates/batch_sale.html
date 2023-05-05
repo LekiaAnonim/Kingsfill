@@ -320,6 +320,7 @@
                             <th>Transaction ID</th>
                             <th>Kg</th>
                             <th>Price</th>
+                            <th>Payment Method</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -334,6 +335,7 @@
                             </td>
                             <td>{{sale.kg}}kg</td>
                             <td><span>₦</span>{{sale.price}}</td>
+                            <td>{{sale.payment_type}}</td>
                             <td>{{sale.date}}</td>
                         </tr>
                         {% endfor %}
