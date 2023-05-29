@@ -12,27 +12,27 @@
             <div class="batch-sale-detail">
                 <div class="batch-info">
                     <h5>Batch cost</h5>
-                    <p>₦{{batch.cost}}</p>
+                    <p>₦{{batch.cost|floatformat:"2g"}}</p>
                 </div>
                 <div class="batch-info">
                     <h5>Profit</h5>
                     {% if profit <= 0 %}
-                    <p style="color:red;">₦{{profit}}</p>
+                    <p style="color:red;">₦{{profit|floatformat:"2g"}}</p>
                     {% else %}
-                    <p>₦{{profit}}</p>
+                    <p>₦{{profit|floatformat:"2g"}}</p>
                     {% endif %}
                 </div>
                 <div class="batch-info">
                     <h5>Initial kg</h5>
-                    <p>{{batch.kg}}</p>
+                    <p>{{batch.kg|floatformat:"2g"}}</p>
                 </div>
                 <div class="batch-info">
                     <h5>Kg sold</h5>
-                    <p>{{total_sales_kg}}</p>
+                    <p>{{total_sales_kg|floatformat:"2g"}}</p>
                 </div>
                 <div class="batch-info">
                     <h5>Sales Count</h5>
-                    <p>{{sales_count}}</p>
+                    <p>{{sales_count|floatformat:"0"}}</p>
                 </div>
             </div>
         </div>
@@ -382,10 +382,37 @@
                     <div class="semi-circle-container-green">
                         <div class="semi-circle-content">
                             <p class="stat-date">{{date_}}</p>
-                            <p class="stat-info">Total kg</p>
-                            <h4 class="stat-info-value">{{batch_data_date_kg}}</h4>
-                            <p class="stat-info">Total price</p>
-                            <h4 class="stat-info-value"><span>₦</span> {{batch_data_date_price}}</h4>
+                            <table class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Kg</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="stats-indicator">POS</td>
+                                        <td>{{batch_sales_date_pos_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_date_pos_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="stats-indicator">Cash</td>
+                                        <td>{{batch_sales_date_cash_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_date_cash_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="stats-indicator">Transfer</td>
+                                        <td>{{batch_sales_date_transfer_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_date_transfer_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr class="stats-total">
+                                        <td>Total</td>
+                                        <td>{{batch_data_date_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_data_date_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -393,10 +420,38 @@
                     <div class="semi-circle-container-red">
                         <div class="semi-circle-content">
                             <p class="stat-date">{{year_}}-{{month_}}</p>
-                            <p class="stat-info">Total kg</p>
-                            <h4 class="stat-info-value">{{batch_data_month_kg}}</h4>
-                            <p class="stat-info">Total price</p>
-                            <h4 class="stat-info-value"><span>₦</span> {{batch_data_month_price}}</h4>
+
+                            <table class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Kg</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="stats-indicator">POS</td>
+                                        <td>{{batch_sales_month_pos_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_month_pos_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="stats-indicator">Cash</td>
+                                        <td>{{batch_sales_month_cash_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_month_cash_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="stats-indicator">Transfer</td>
+                                        <td>{{batch_sales_month_transfer_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_month_transfer_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr class="stats-total">
+                                        <td>Total</td>
+                                        <td>{{batch_data_month_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_data_month_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     
@@ -405,10 +460,38 @@
                     <div class="semi-circle-container-blue">
                         <div class="semi-circle-content">
                             <p class="stat-date">{{year_real}}</p>
-                            <p class="stat-info">Total kg</p>
-                            <h4 class="stat-info-value">{{batch_data_year_kg}}</h4>
-                            <p class="stat-info">Total price</p>
-                            <h4 class="stat-info-value"><span>₦</span> {{batch_data_year_price}}</h4>
+
+                            <table class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Kg</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="stats-indicator">POS</td>
+                                        <td>{{batch_sales_year_pos_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_year_pos_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="stats-indicator">Cash</td>
+                                        <td>{{batch_sales_year_cash_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_year_cash_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="stats-indicator">Transfer</td>
+                                        <td>{{batch_sales_year_transfer_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_sales_year_transfer_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                    <tr class="stats-total">
+                                        <td>Total</td>
+                                        <td>{{batch_data_year_kg|floatformat:"2g"}}</td>
+                                        <td><span>₦</span> {{batch_data_year_price|floatformat:"2g"}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

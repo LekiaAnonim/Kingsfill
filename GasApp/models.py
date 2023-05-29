@@ -16,14 +16,28 @@ class Shop(models.Model):
         return f"{self.shop_name}-{self.id}"
     
     class Meta:
-
         ordering =['shop_name','date_created', 'id']
 
     def get_absolute_url(self):
         return reverse('GasApp:shop-batches', kwargs={'pk': self.id})
+
+# class Cylinder(models.Model):
+#     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, null=True, blank=True)
+#     cylinder_capacity = models.DecimalField(max_digits=50, null=True, blank=True, decimal_places=2)
+#     cylinder_name = models.CharField(max_length=500, null=True, blank=True, unique=True)
+
+#     def __str__(self):
+#         return f"{self.shop.shop_name}-{self.cylinder_name}-{self.cylinder_capacity}"
+    
+#     class Meta:
+#         ordering =['cylinder_name','cylinder_capacity']
+
+
     
 class Batch(models.Model):
     shop = models.ForeignKey(Shop, related_name='shop', on_delete=models.SET_NULL, null=True)
+    # create a many-to-many field for cylinder
+    # cylinders = models.ManyToManyField(Cylinder, related_name='cylinders', blank=True)
     batch_name = models.CharField(max_length=500, null=True, blank=True, default="Batch", unique=True)
     date_created = models.DateField(null=True, default=date.today)
     cost = models.DecimalField(null=True, max_digits=20, decimal_places=2)
@@ -50,6 +64,8 @@ class Batch(models.Model):
 
 class Sale(models.Model):
     batch = models.ForeignKey(Batch, related_name='batch', on_delete=models.SET_NULL, null=True)
+    # create a foreignkey for cylinder
+    # cylinder = models.ForeignKey(Cylinder, related_name='cylinder', on_delete=models.SET_NULL, null=True)
     kg = models.DecimalField(null=True,max_digits=20, decimal_places=2)
     price = models.DecimalField(null=True, max_digits=20, decimal_places=2)
     date = models.DateField(null=True, default=date.today)

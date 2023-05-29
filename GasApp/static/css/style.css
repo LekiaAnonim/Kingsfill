@@ -417,7 +417,7 @@ a{
     justify-content: space-between;
 }
 .stats-result-card{
-    padding: 20px 20px 50px 20px;
+    padding: 10px 10px 20px 10px;
     border-radius: 12px;
     background-color: #fff;
     width: fit-content;
@@ -437,9 +437,9 @@ a{
 }
 .semi-circle-container-green{
     width: 200px;
-    height: 100px; /* as the half of the width */
-    border-top-left-radius: 100px;
-    border-top-right-radius: 100px;
+    /* height: 100px; as the half of the width */
+    /* border-top-left-radius: 100px;
+    border-top-right-radius: 100px; */
     border: 4px solid #07d600;
     border-bottom: 0;
     -webkit-box-sizing: border-box;
@@ -452,9 +452,9 @@ a{
 }
 .semi-circle-container-red{
     width: 200px;
-    height: 100px; /* as the half of the width */
-    border-top-left-radius: 100px;
-    border-top-right-radius: 100px;
+    /* height: 100px; as the half of the width */
+    /* border-top-left-radius: 100px;
+    border-top-right-radius: 100px; */
     border: 4px solid #d6002e;
     border-bottom: 0;
     -webkit-box-sizing: border-box;
@@ -466,9 +466,9 @@ a{
 }
 .semi-circle-container-blue{
     width: 200px;
-    height: 100px; /* as the half of the width */
-    border-top-left-radius: 100px;
-    border-top-right-radius: 100px;
+    /* height: 100px; as the half of the width */
+    /* border-top-left-radius: 100px;
+    border-top-right-radius: 100px; */
     border: 4px solid #009bd6;
     border-bottom: 0;
     -webkit-box-sizing: border-box;
@@ -479,7 +479,7 @@ a{
     justify-content: center;
 }
 .semi-circle-content{
-    margin-top: 40px;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -493,12 +493,17 @@ a{
     color: #d6002e;
     margin-bottom: 7px;
 }
-.stat-info{
-    font-size: 11px;
-    color: grey;
+.stats-table td{
+    font-size: 9.5px;
 }
-.stat-info-value{
-    font-size: 14px;
+.stats-table th{
+    font-size: 9.5px;
+}
+.stats-total{
+    font-weight: 700;
+}
+.stats-indicator{
+    font-weight: 600;
 }
 .form-check-box{
     display: flex;

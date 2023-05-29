@@ -50,5 +50,5 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/',
          views.activate, name='activate'),
 
-    path('print', views.GeneratePdf.as_view(), name='print')
+    path('download_csv', views.csv_download, name='download_csv')
 ]

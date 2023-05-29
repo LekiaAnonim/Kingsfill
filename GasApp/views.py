@@ -164,6 +164,23 @@ class ShopBatchView(LoginRequiredMixin, ListView):
         context['batches'] = batches
         return context
 
+import csv
+
+def csv_download(request):
+    # get queryset of batch sales with id filter
+    batch_sales = Sale.objects.all().order_by('-batch__shop__shop_name').order_by('-batch__batch_name').order_by('-date').order_by('-id')
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse('text/csv')
+    response['Content-Disposition'] = 'attachment; filename=sale_data.csv'
+    # Create the CSV writer using the HttpResponse as the "file"
+    writer = csv.writer(response)
+    writer.writerow(['Transaction ID', 'Kg', 'Price', 'Payment Method', 'Date', 'Batch', 'Shop'])
+    for sale in batch_sales:
+        writer.writerow([sale.id, sale.kg, sale.price, sale.payment_type, sale.date, sale.batch.batch_name, sale.batch.shop.shop_name])
+
+    return response
+
 class BatchSaleView(LoginRequiredMixin, ListView, FormView):
     model = Sale
     template_name = "batch_sale.html"
@@ -213,58 +230,87 @@ class BatchSaleView(LoginRequiredMixin, ListView, FormView):
         
         batch = get_object_or_404(Batch, id=self.kwargs.get('id'))
         batch_sales = Sale.objects.filter(batch=batch).order_by('-date').order_by('-id')
-
+        
         # Date Display in Stats Tab
         if batch_sales.last() == None:
             latest_date = date.today()
-            
         else:
-            latest_date = batch_sales.last().date
+            latest_date = Sale.objects.filter(batch=batch).first().date
 
         latest_month = latest_date.strftime('%m')
         latest_day = latest_date.strftime('%d')
         
         date_request = request.GET.get('date-filter')
         if date_request == None:
-            date_ = latest_date
-            batch_data_date = Sale.objects.filter(batch=batch, date = date_).values()
+            date_ = latest_date   
         else:
             date_ = date_request
-            batch_data_date = Sale.objects.filter(batch=batch, date = date_).values()
+        batch_data_date = Sale.objects.filter(batch=batch, date = date_).values()
+        batch_sales_pos = Sale.objects.filter(batch=batch, payment_type='POS', date = date_).values()
+        batch_sales_cash = Sale.objects.filter(batch=batch, payment_type='Cash', date = date_).values()
+        batch_sales_transfer = Sale.objects.filter(batch=batch, payment_type='Bank Transfer', date = date_).values()
 
-        
+        # Calculate the sum of kg and price for total batch sales and each payment type
         batch_data_date_kg = batch_data_date.aggregate(Sum('kg'))['kg__sum']
         batch_data_date_price = batch_data_date.aggregate(Sum('price'))['price__sum']
+        batch_sales_date_pos_kg = batch_sales_pos.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_date_pos_price = batch_sales_pos.aggregate(Sum('price'))['price__sum']
+        batch_sales_date_cash_kg = batch_sales_cash.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_date_cash_price = batch_sales_cash.aggregate(Sum('price'))['price__sum']
+        batch_sales_date_transfer_kg = batch_sales_transfer.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_date_transfer_price = batch_sales_transfer.aggregate(Sum('price'))['price__sum']
 
         # Month Display in Stats Tab
         month_request = request.GET.get('month-filter')
         if month_request == None:
-            
             month_ = latest_date.month
             year_ = latest_date.year
-            batch_data_month = Sale.objects.filter(batch=batch, date__month = month_, date__year = year_).values()
         else:
             month_request_ = datetime.strptime(month_request, '%Y-%m')
             month_ = month_request_.month
             year_ = month_request_.year
-            batch_data_month = Sale.objects.filter(batch=batch, date__month = month_, date__year = year_).values()
+        batch_data_month = Sale.objects.filter(batch=batch, date__month = month_, date__year = year_).values()
+        batch_sales_pos_month = Sale.objects.filter(batch=batch, payment_type='POS', date__month = month_, date__year = year_).values()
+        batch_sales_cash_month = Sale.objects.filter(batch=batch, payment_type='Cash', date__month = month_, date__year = year_).values()
+        batch_sales_transfer_month = Sale.objects.filter(batch=batch, payment_type='Bank Transfer', date__month = month_, date__year = year_).values()
 
         batch_data_month_kg = batch_data_month.aggregate(Sum('kg'))['kg__sum']
         batch_data_month_price = batch_data_month.aggregate(Sum('price'))['price__sum']
+        batch_sales_month_pos_kg = batch_sales_pos_month.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_month_pos_price = batch_sales_pos_month.aggregate(Sum('price'))['price__sum']
+        batch_sales_month_cash_kg = batch_sales_cash_month.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_month_cash_price = batch_sales_cash_month.aggregate(Sum('price'))['price__sum']
+        batch_sales_month_transfer_kg = batch_sales_transfer_month.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_month_transfer_price = batch_sales_transfer_month.aggregate(Sum('price'))['price__sum']
 
         # ----------------------------------------------------------------------------------
         # Year Display in Stats Tab
         year_request = request.GET.get('year-filter')
         if year_request== None:
             year_real = latest_date.year
-            batch_data_year = Sale.objects.filter(batch=batch, date__year = year_real).values()
+            # batch_data_year = Sale.objects.filter(batch=batch, date__year = year_real).values()
         else:
-            
             year_real = year_request
-            batch_data_year = Sale.objects.filter(batch=batch, date__year = year_real).values()
+        batch_data_year = Sale.objects.filter(batch=batch, date__year = year_real).values()
+        batch_sales_pos_year = Sale.objects.filter(batch=batch, payment_type='POS', date__year = year_real).values()
+        batch_sales_cash_year = Sale.objects.filter(batch=batch, payment_type='Cash', date__year = year_real).values()
+        batch_sales_transfer_year = Sale.objects.filter(batch=batch, payment_type='Bank Transfer', date__year = year_real).values()
 
         batch_data_year_kg = batch_data_year.aggregate(Sum('kg'))['kg__sum']
         batch_data_year_price = batch_data_year.aggregate(Sum('price'))['price__sum']
+        batch_sales_year_pos_kg = batch_sales_pos_year.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_year_pos_price = batch_sales_pos_year.aggregate(Sum('price'))['price__sum']
+        batch_sales_year_cash_kg = batch_sales_cash_year.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_year_cash_price = batch_sales_cash_year.aggregate(Sum('price'))['price__sum']
+        batch_sales_year_transfer_kg = batch_sales_transfer_year.aggregate(Sum('kg'))['kg__sum']
+        batch_sales_year_transfer_price = batch_sales_transfer_year.aggregate(Sum('price'))['price__sum']
+
+        context['batch_sales_year_pos_kg'] = batch_sales_year_pos_kg
+        context['batch_sales_year_pos_price'] = batch_sales_year_pos_price
+        context['batch_sales_year_cash_kg'] = batch_sales_year_cash_kg
+        context['batch_sales_year_cash_price'] = batch_sales_year_cash_price
+        context['batch_sales_year_transfer_kg'] = batch_sales_year_transfer_kg
+        context['batch_sales_year_transfer_price'] = batch_sales_year_transfer_price
 
         # -------------------------------------------------------------------------------------------
 
@@ -285,7 +331,13 @@ class BatchSaleView(LoginRequiredMixin, ListView, FormView):
         context['batch_data_date_kg'] = batch_data_date_kg
         context['batch_data_date_price'] = batch_data_date_price
 
-        context['date_'] = date_
+        context['batch_sales_date_pos_kg'] = batch_sales_date_pos_kg
+        context['batch_sales_date_pos_price'] = batch_sales_date_pos_price
+        context['batch_sales_date_cash_kg'] = batch_sales_date_cash_kg
+        context['batch_sales_date_cash_price'] = batch_sales_date_cash_price
+        context['batch_sales_date_transfer_kg'] = batch_sales_date_transfer_kg
+        context['batch_sales_date_transfer_price'] = batch_sales_date_transfer_price
+
         context['latest_date'] = latest_date
         context['latest_month'] = latest_month
         context['latest_day'] = latest_day
@@ -294,11 +346,22 @@ class BatchSaleView(LoginRequiredMixin, ListView, FormView):
         context['batch_data_month'] = batch_data_month
         context['batch_data_month_kg'] = batch_data_month_kg
         context['batch_data_month_price'] = batch_data_month_price
+        context['batch_sales_month_pos_kg'] = batch_sales_month_pos_kg
+        context['batch_sales_month_pos_price'] = batch_sales_month_pos_price
+        context['batch_sales_month_cash_kg'] = batch_sales_month_cash_kg
+        context['batch_sales_month_cash_price'] = batch_sales_month_cash_price
+        context['batch_sales_month_transfer_kg'] = batch_sales_month_transfer_kg
+        context['batch_sales_month_transfer_price'] = batch_sales_month_transfer_price
 
         context['year_real'] = year_real
-        # context['batch_data_month'] = batch_data_year
         context['batch_data_year_kg'] = batch_data_year_kg
         context['batch_data_year_price'] = batch_data_year_price
+        context['batch_sales_year_pos_kg'] = batch_sales_year_pos_kg
+        context['batch_sales_year_pos_price'] = batch_sales_year_pos_price
+        context['batch_sales_year_cash_kg'] = batch_sales_year_cash_kg
+        context['batch_sales_year_cash_price'] = batch_sales_year_cash_price
+        context['batch_sales_year_transfer_kg'] = batch_sales_year_transfer_kg
+        context['batch_sales_year_transfer_price'] = batch_sales_year_transfer_price
 
         context['batch_sales'] = batch_sales
         context['batch'] = batch
@@ -312,14 +375,15 @@ class BatchSaleView(LoginRequiredMixin, ListView, FormView):
         batch_sales = Sale.objects.filter(batch=batch).last()
         # print(batch_sales)
         form.instance.batch = batch
-        if batch_sales == None:
-            form.instance.sale_id = 1
-            self.object = form.save()
-            return redirect('GasApp:sale-receipt', 1)
-        else:
+
+        if batch_sales:
             form.instance.sale_id = batch_sales.id+1
             self.object = form.save()
             return redirect('GasApp:sale-receipt', batch_sales.id+1)
+        else:
+            form.instance.sale_id = 1
+            self.object = form.save()
+            return redirect('GasApp:sale-receipt', 1)
 
 class SearchResultsList(ListView):
     model = Sale
