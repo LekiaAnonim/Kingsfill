@@ -417,7 +417,7 @@ a{
     justify-content: space-between;
 }
 .stats-result-card{
-    padding: 20px 20px 50px 20px;
+    padding: 10px 10px 20px 10px;
     border-radius: 12px;
     background-color: #fff;
     width: fit-content;
@@ -479,7 +479,7 @@ a{
     justify-content: center;
 }
 .semi-circle-content{
-    margin-top: 40px;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
