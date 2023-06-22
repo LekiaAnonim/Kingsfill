@@ -61,7 +61,7 @@ class BatchView(LoginRequiredMixin, ListView):
     model = Batch
     template_name = 'batch.html'
     context_object_name = 'batches'
-    paginate_by = 12
+    # paginate_by = 12
     login_url = "GasApp:login"
     redirect_field_name = "redirect_to"
 
@@ -75,7 +75,7 @@ class ShopView(LoginRequiredMixin, ListView):
     model = Shop
     template_name = 'shop.html'
     context_object_name = 'shops'
-    paginate_by = 12
+    # paginate_by = 12
     login_url = "GasApp:login"
     redirect_field_name = "redirect_to"
 
@@ -92,7 +92,7 @@ class CustomersView(LoginRequiredMixin, ListView):
     model = Sale
     template_name = 'customers_list.html'
     context_object_name = 'customers'
-    paginate_by = 12
+    # paginate_by = 12
     login_url = "GasApp:login"
     redirect_field_name = "redirect_to"
 
@@ -146,7 +146,7 @@ class BatchDeleteView(LoginRequiredMixin, DeleteView):
 class ShopBatchView(LoginRequiredMixin, ListView):
     model = Batch
     template_name = "shop_batch.html"
-    paginate_by = 12
+    # paginate_by = 12
     context_object_name = 'batches'
     login_url = "GasApp:login"
     redirect_field_name = "redirect_to"
@@ -184,7 +184,7 @@ def csv_download(request):
 class BatchSaleView(LoginRequiredMixin, ListView, FormView):
     model = Sale
     template_name = "batch_sale.html"
-    paginate_by = 12
+    # paginate_by = 12
     form_class = SaleForm
     login_url = "GasApp:login"
     redirect_field_name = "redirect_to"
