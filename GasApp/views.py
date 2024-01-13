@@ -50,6 +50,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 # Create your views here.
 
 class IndexView(TemplateView):
@@ -95,9 +96,7 @@ class CustomersView(LoginRequiredMixin, ListView):
     # paginate_by = 12
     login_url = "GasApp:login"
     redirect_field_name = "redirect_to"
-
     def get_queryset(self):
-
         shop = get_object_or_404(Shop, id=self.kwargs.get('id'))
         customers_group = Sale.objects.filter(batch__shop = shop).values('customer_phone').annotate(Sum('kg'), Sum('price'))
         # print(customers_group)
@@ -372,18 +371,25 @@ class BatchSaleView(LoginRequiredMixin, ListView, FormView):
 
     def form_valid(self, form, *args, **kwargs):
         batch = get_object_or_404(Batch, id=self.kwargs.get('id'))
-        batch_sales = Sale.objects.filter(batch=batch).last()
-        # print(batch_sales)
+        # batch_sales = Sale.objects.filter(batch=batch).last()
         form.instance.batch = batch
 
-        if batch_sales:
-            form.instance.sale_id = batch_sales.id+1
-            self.object = form.save()
-            return redirect('GasApp:sale-receipt', batch_sales.id+1)
-        else:
-            form.instance.sale_id = 1
-            self.object = form.save()
-            return redirect('GasApp:sale-receipt', 1)
+        # if batch_sales:
+        #     form.instance.sale_id = batch_sales.id+1
+        #     self.object = form.save()
+        #     return redirect('GasApp:sale-receipt', batch_sales.id+1)
+        # else:
+        #     form.instance.sale_id = 1
+        #     self.object = form.save()
+        #     return redirect('GasApp:sale-receipt', 1)
+
+
+        instance = form.save(commit=False)
+        # Customize any additional processing if needed
+        instance.save()
+
+        # Redirect to the landing page with the submitted form data
+        return HttpResponseRedirect(reverse_lazy('GasApp:sale-receipt', kwargs={'pk': instance.pk}))
 
 class SearchResultsList(ListView):
     model = Sale
