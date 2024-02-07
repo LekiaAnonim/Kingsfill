@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'Kingsfill.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(default='postgresql://postgres:pEE4duWPb7H8Q0pdKFsP@containers-us-west-188.railway.app:7398/railway', conn_max_age=1800),
+    "default": dj_database_url.config(default='postgresql://postgres:2ga54c6dEad4eAeF6631Cca213b1Df61@monorail.proxy.rlwy.net:20947/railway', conn_max_age=1800),
 }
 # DATABASES = {
 #     'default': {
